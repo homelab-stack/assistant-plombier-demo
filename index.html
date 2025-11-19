@@ -1,104 +1,479 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Assistant IA Plombiers - Démo</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            padding: 20px;
-            text-align: center;
-        }
-        h1 {
-            margin-bottom: 30px;
-        }
-        .btn {
-            display: block;
-            width: 80%;
-            margin: 15px auto;
-            padding: 15px;
-            background: #0070f3;
-            color: white;
-            border: none;
-            border-radius: 8px;
-            font-size: 18px;
-            cursor: pointer;
-        }
-        .btn:hover {
-            background: #0059c9;
-        }
-        .demo-box {
-            margin-top: 25px;
-            padding: 20px;
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-            text-align: left;
-            display: none;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Assistant IA pour Plombiers — Démo</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top left, #ffb347, #ff4b8a, #7b4dff);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 20px;
+      color: #111827;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 900px;
+      background: #0b1020ee;
+      border-radius: 20px;
+      padding: 20px 18px 24px;
+      box-shadow: 0 18px 40px rgba(0,0,0,0.35);
+      color: #f9fafb;
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        padding: 26px 28px 30px;
+      }
+    }
+
+    .header {
+      text-align: left;
+      margin-bottom: 18px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12px;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.4);
+      margin-bottom: 8px;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #22c55e;
+    }
+
+    h1 {
+      font-size: 20px;
+      line-height: 1.2;
+      margin-bottom: 6px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #cbd5f5;
+      max-width: 540px;
+    }
+
+    @media (min-width: 768px) {
+      h1 { font-size: 24px; }
+      .subtitle { font-size: 14px; }
+    }
+
+    .layout {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    @media (min-width: 900px) {
+      .layout {
+        flex-direction: row;
+        align-items: stretch;
+      }
+    }
+
+    .left {
+      flex: 1.1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .right {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin-top: 4px;
+      margin-bottom: 6px;
+    }
+
+    @media (max-width: 600px) {
+      .buttons {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    .btn {
+      border: none;
+      border-radius: 999px;
+      padding: 10px 12px;
+      background: linear-gradient(135deg, #f97316, #ec4899);
+      color: #fefefe;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.35);
+      transition: transform 0.08s ease-out, box-shadow 0.08s ease-out, opacity 0.15s;
+      white-space: normal;
+      text-align: center;
+    }
+
+    .btn span {
+      font-size: 15px;
+    }
+
+    .btn.secondary {
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.5);
+      box-shadow: none;
+      color: #e5e7eb;
+    }
+
+    .btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 30px rgba(0,0,0,0.4);
+      opacity: 0.95;
+    }
+
+    .btn.secondary:hover {
+      box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+    }
+
+    .demo-box {
+      background: rgba(15,23,42,0.92);
+      border-radius: 14px;
+      padding: 14px 14px 12px;
+      border: 1px solid rgba(148,163,184,0.35);
+      min-height: 150px;
+      box-shadow: inset 0 0 0 1px rgba(15,15,30,0.7);
+      opacity: 0;
+      transform: translateY(8px);
+      transition: opacity 0.22s ease-out, transform 0.22s ease-out;
+      font-size: 13px;
+      overflow: hidden;
+    }
+
+    .demo-box.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .demo-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+
+    .demo-title {
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .demo-tag {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.5);
+      color: #cbd5f5;
+    }
+
+    .demo-body {
+      background: #020617;
+      border-radius: 10px;
+      padding: 10px 11px;
+      border: 1px solid rgba(30,64,175,0.6);
+      line-height: 1.5;
+      color: #e5e7eb;
+      white-space: pre-line;
+    }
+
+    .kv {
+      font-size: 12px;
+      margin-bottom: 4px;
+      color: #9ca3af;
+    }
+
+    .highlight {
+      font-weight: 600;
+      color: #facc15;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .chip {
+      font-size: 10px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.9);
+      border: 1px solid rgba(148,163,184,0.45);
+      color: #e5e7eb;
+    }
+
+    .panel {
+      background: rgba(15,23,42,0.96);
+      border-radius: 14px;
+      padding: 12px 13px;
+      border: 1px solid rgba(148,163,184,0.35);
+      font-size: 12px;
+    }
+
+    .panel-title {
+      font-weight: 600;
+      margin-bottom: 6px;
+      font-size: 12px;
+      color: #e5e7eb;
+    }
+
+    .list {
+      list-style: none;
+      margin-left: 0;
+    }
+
+    .list li {
+      margin-bottom: 3px;
+      display: flex;
+      align-items: flex-start;
+      gap: 6px;
+    }
+
+    .list li::before {
+      content: "•";
+      color: #f97316;
+      margin-top: 1px;
+      font-size: 14px;
+    }
+
+    .price-box {
+      margin-top: 6px;
+      padding: 8px 10px;
+      border-radius: 10px;
+      background: rgba(24,24,40,0.95);
+      border: 1px dashed rgba(148,163,184,0.6);
+      font-size: 12px;
+    }
+
+    .price-main {
+      font-weight: 700;
+      color: #fbbf24;
+    }
+
+    .mini-label {
+      font-size: 10px;
+      color: #9ca3af;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+  </style>
 </head>
 <body>
+  <div class="container">
+    <div class="header">
+      <div class="badge">
+        <div class="badge-dot"></div>
+        <span>Démo en 3 minutes — spécial plombiers</span>
+      </div>
+      <h1>Assistant IA qui fait vos devis, répond à vos clients et vous enlève 90% du stress administratif.</h1>
+      <p class="subtitle">
+        Voici comment votre “bras droit IA” pourrait travailler pendant que vous êtes sur les chantiers.
+        Cliquez sur un scénario pour voir ce que l’outil ferait à votre place.
+      </p>
+    </div>
 
-    <h1>Assistant IA pour Plombiers — Démo</h1>
+    <div class="layout">
+      <div class="left">
+        <div class="buttons">
+          <button class="btn" onclick="showDemo('devis')">
+            <span>📄</span> Devis auto en 10 secondes
+          </button>
+          <button class="btn" onclick="showDemo('reponse')">
+            <span>💬</span> Réponse automatique à un client
+          </button>
+          <button class="btn" onclick="showDemo('relance')">
+            <span>🔔</span> Relance d’un devis non répondu
+          </button>
+          <button class="btn secondary" onclick="showDemo('vocal')">
+            <span>🎙️</span> Message vocal → devis généré
+          </button>
+        </div>
 
-    <button class="btn" onclick="showDemo('devis')">Créer un devis automatiquement</button>
-    <button class="btn" onclick="showDemo('reponse')">Répondre à un client</button>
-    <button class="btn" onclick="showDemo('relance')">Relancer un client</button>
+        <div id="demo-box" class="demo-box">
+          <div class="demo-header">
+            <div class="demo-title">Sélectionnez un scénario</div>
+            <div class="demo-tag">Simulé pour la démo</div>
+          </div>
+          <div class="demo-body">
+            Cliquez sur un des boutons à gauche pour voir ce que l’assistant IA génère à votre place.
+          </div>
+          <div class="chip-row">
+            <div class="chip">⏱ Moins de temps perdu</div>
+            <div class="chip">💸 Moins de clients oubliés</div>
+            <div class="chip">🧠 Moins de charge mentale</div>
+          </div>
+        </div>
+      </div>
 
-    <div id="demo-box" class="demo-box"></div>
+      <div class="right">
+        <div class="panel">
+          <div class="panel-title">Avant vs Après l’assistant IA</div>
+          <div class="mini-label" style="margin-bottom:4px;">Avant</div>
+          <ul class="list">
+            <li>Soirées à faire les devis à la main</li>
+            <li>Messages clients qui s’accumulent</li>
+            <li>Devis envoyés sans réponses ni relances</li>
+            <li>Stress de “tout noter quelque part”</li>
+          </ul>
+          <div class="mini-label" style="margin-top:6px; margin-bottom:4px;">Après</div>
+          <ul class="list">
+            <li>Devis générés automatiquement en quelques secondes</li>
+            <li>Réponses automatiques aux questions simples</li>
+            <li>Relances programmées sans rien oublier</li>
+            <li>Vous vous concentrez sur les chantiers, pas sur le papier</li>
+          </ul>
 
-    <script>
-        function showDemo(type) {
-            const box = document.getElementById("demo-box");
-            let content = "";
+          <div class="price-box">
+            <div class="mini-label">Offre</div>
+            <div class="price-main">Installation + assistant IA personnalisé : 1 000 €</div>
+            <div>Généralement rentabilisé en <span class="highlight">1 seul chantier</span>.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-            if (type === "devis") {
-                content = `
-                <h3>Devis généré automatiquement</h3>
-                <p><strong>Client :</strong> Mme Bernard<br>
-                <strong>Adresse :</strong> 23 rue des Lilas, Paris<br>
-                <strong>Date :</strong> 19/11/2025</p>
-                <p><strong>Détails :</strong><br>
-                - Diagnostic fuite sous évier<br>
-                - Remplacement du siphon<br>
-                - Révision canalisation<br>
-                - Main-d'œuvre : 1h<br>
-                - Déplacement inclus</p>
-                <p><strong>Total : 145€ TTC</strong></p>
-                `;
-            }
+  <script>
+    function showDemo(type) {
+      const box = document.getElementById("demo-box");
+      const body = box.querySelector(".demo-body");
+      const title = box.querySelector(".demo-title");
+      const tag = box.querySelector(".demo-tag");
 
-            if (type === "reponse") {
-                content = `
-                <h3>Réponse automatique</h3>
-                <p><strong>Demande client :</strong> “Bonjour, vous pouvez passer quand ?”</p>
-                <p><strong>Réponse IA :</strong><br>
-                Bonjour, merci pour votre message !<br>
-                Disponibilités :<br>
-                - Demain entre 9h et 13h<br>
-                - Mercredi entre 14h et 18h<br><br>
-                Dites-moi ce qui vous arrange et je bloque le créneau.</p>
-                `;
-            }
+      let titleText = "";
+      let tagText = "Simulation IA";
+      let content = "";
 
-            if (type === "relance") {
-                content = `
-                <h3>Relance automatique</h3>
-                <p><strong>Client :</strong> Devis envoyé le 13/11 — pas de réponse</p>
-                <p><strong>Message IA :</strong><br>
-                Bonjour, petite relance concernant le devis envoyé le 13.<br>
-                Si vous avez des questions ou besoin d’ajustements, je suis dispo.<br>
-                Souhaitez-vous valider l’intervention ?</p>
-                `;
-            }
+      if (type === "devis") {
+        titleText = "Devis généré automatiquement";
+        content = `
+Client : Mme Bernard
+Adresse : 23 rue des Lilas, Paris
+Date : 19/11/2025
 
-            box.innerHTML = content;
-            box.style.display = "block";
-        }
-    </script>
+Détails de l’intervention :
+• Fuite sous évier
+• Remplacement du siphon
+• Révision de la canalisation
+• Main-d’œuvre : 1h
+• Déplacement inclus
 
+TOTAL : 145 € TTC
+
+Le client reçoit ce devis propre, sans que vous ayez touché à un ordinateur.
+        `;
+      }
+
+      if (type === "reponse") {
+        titleText = "Réponse automatique à un client";
+        content = `
+Demande client :
+“Bonjour, vous pouvez passer quand ?”
+
+Réponse générée par l’assistant IA :
+
+“Bonjour, merci pour votre message !
+Voici les créneaux disponibles :
+• Demain entre 9h et 13h
+• Mercredi entre 14h et 18h
+
+Dites-moi ce qui vous arrange et je bloque le créneau.”
+
+Pendant que vous êtes sur un chantier, l’assistant répond à votre place.
+        `;
+      }
+
+      if (type === "relance") {
+        titleText = "Relance d’un devis non répondu";
+        content = `
+Devis envoyé le : 13/11 — aucune réponse
+
+Message de relance automatique :
+
+“Bonjour,
+Je me permets une petite relance concernant le devis envoyé le 13.
+Si vous avez des questions ou besoin d’ajustements, je suis disponible.
+Souhaitez-vous valider l’intervention ?”
+
+Plus de devis oubliés, plus de relances à faire le soir.
+        `;
+      }
+
+      if (type === "vocal") {
+        titleText = "Message vocal → devis en 10 secondes";
+        content = `
+Exemple de message vocal que vous pourriez dicter :
+
+“Fuite sous évier chez Mme Bernard, Paris 15.
+Remplacement siphon + main-d’œuvre 1h + déplacement standard.”
+
+L’assistant IA transforme ça en devis :
+
+Client : Mme Bernard
+Adresse : Paris 15
+Intervention :
+• Diagnostic fuite
+• Remplacement siphon
+• Test d’étanchéité
+• Main-d’œuvre : 1h
+• Déplacement
+
+TOTAL : 150–180 € TTC (selon vos tarifs configurés)
+
+Vous parlez, l’IA prépare le devis.
+        `;
+      }
+
+      title.textContent = titleText || "Scénario IA";
+      tag.textContent = tagText;
+      body.textContent = content.trim() || "Sélectionnez un scénario à gauche pour voir le résultat.";
+
+      // animation
+      box.classList.remove("visible");
+      void box.offsetWidth; // force reflow
+      box.classList.add("visible");
+    }
+
+    // rendre la box visible au chargement
+    window.addEventListener("load", () => {
+      const box = document.getElementById("demo-box");
+      box.classList.add("visible");
+    });
+  </script>
 </body>
 </html>
